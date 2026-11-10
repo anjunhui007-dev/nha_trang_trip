@@ -1,0 +1,54 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>나트랑 여행 지도</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>body{margin:0;font-family:system-ui,'Malgun Gothic',sans-serif;background:#f6f8fb;color:#172333}header{background:#123b54;color:white;padding:15px 20px}h1{font-size:21px;margin:0}header small{opacity:.8}.layout{display:grid;grid-template-columns:350px 1fr;height:calc(100dvh - 74px)}aside{overflow:auto;padding:15px;background:white;border-right:1px solid #ddd}#map{height:100%;min-height:420px}.tabs,.filters{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}button{border:1px solid #ccd5dc;background:white;border-radius:8px;padding:8px;cursor:pointer}button.active{background:#145b79;color:white}.place{padding:10px;border-bottom:1px solid #eee}.place label{display:flex;gap:8px;align-items:center;font-weight:600}.place small{display:block;margin:4px 0 0 25px;color:#536270}.price{color:#137457}.muted{color:#697987;font-size:12px}.day{padding:12px;border-bottom:1px solid #e1e5e9}.hidden{display:none}input[type=search]{box-sizing:border-box;width:100%;padding:10px;border:1px solid #bbb;border-radius:8px}a{color:#076d99}@media(max-width:700px){.layout{display:flex;flex-direction:column;height:auto}aside{order:2;max-height:none}#map{order:1;height:53dvh;min-height:330px}}</style></head><body><header><h1>🇻🇳 나트랑 여행 지도</h1><small>2026.11.13–20 · 관광지·맛집·쇼핑 · 체크해서 핀 표시</small></header><div class="layout"><aside><div class="tabs"><button id="placesTab" class="active">장소 선택</button><button id="planTab">기본 일정</button></div><section id="places"><input id="search" type="search" placeholder="장소 검색"><div class="filters" id="filters"></div><div class="muted" id="count"></div><div id="list"></div></section><section id="plan" class="hidden"></section></aside><div id="map"></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
+const raw=[
+["나트랑 시내","기본","Nha Trang City",12.2388,109.1967,"도착·야시장·시내 산책",""],
+["나트랑 야시장","쇼핑","Nha Trang Night Market",12.237,109.196,"야시장과 길거리 먹거리","무료 입장"],
+["빈원더스","기본","VinWonders Nha Trang",12.218,109.245,"11/15 테마파크·워터파크","약 950,000~1,050,000동"],
+["혼땀 리조트","기본","Hon Tam Resort Nha Trang",12.173,109.231,"11/16~17 숙박·해변·머드스파","예약 상품 확인"],
+["판랑 남끄엉 사구","기본","Nam Cuong Sand Dunes Phan Rang",11.518,108.999,"11/18 판랑 선셋 지프투어: 정확한 사구는 예약 확인 필요","예약 상품 확인"],
+["아이리조트","기본","I Resort Nha Trang",12.278,109.172,"11/19 머드온천","약 260,000동부터"],
+["롯데마트 골드코스트","쇼핑","Lotte Mart Gold Coast Nha Trang",12.247,109.194,"기념품·식료품","구매액에 따라"],
+["포나가르 참탑","관광","Po Nagar Cham Towers Nha Trang",12.265,109.195,"참파 유적·시내 북부","약 30,000~50,000동"],
+["혼총곶","관광","Hon Chong Promontory Nha Trang",12.274,109.205,"바위 해안·사진","약 20,000~40,000동"],
+["롱선사","관광","Long Son Pagoda Nha Trang",12.251,109.18,"백색 대불·전망","무료·기부"],
+["담시장","쇼핑","Dam Market Nha Trang",12.254,109.192,"전통시장·현지 물건","무료 입장"],
+["나트랑 대성당","관광","Nha Trang Cathedral",12.246,109.186,"고딕 양식 성당","무료~소액"],
+["해양박물관","관광","National Oceanographic Museum Vietnam Nha Trang",12.206,109.214,"실내 해양 전시","약 40,000~80,000동"],
+["바호 폭포","관광","Ba Ho Waterfalls Nha Trang",12.39,109.112,"우기에는 위험·방문 신중","약 100,000~200,000동"],
+["족렛 해변","관광","Doc Let Beach Ninh Hoa",12.551,109.227,"북쪽 교외 해변","시설별 상이"],
+["바이자이 해변","체험","Bai Dai Beach Cam Ranh",12.095,109.195,"서핑 강습 후보·날씨 확인","약 500,000~1,000,000동"],
+["락깐 숯불구이","맛집","Bo Nuong Lac Canh 77 Nguyen Binh Khiem Nha Trang",12.256,109.189,"숯불 소고기구이","약 150,000~300,000동"],
+["넴느엉 당반꾸옌","맛집","Nem Nuong Dang Van Quyen 16A Lan Ong Nha Trang",12.259,109.188,"나트랑식 돼지고기 쌈","약 40,000~80,000동"],
+["반깐 전문점 후보","맛집","Banh Can Nha Trang",12.242,109.194,"정확한 가게 미선정·대표 위치","약 35,000~80,000동"],
+["반쎄오 전문점 후보","맛집","Banh Xeo Nha Trang",12.239,109.194,"정확한 가게 미선정·대표 위치","약 40,000~100,000동"],
+["쌀국수 전문점 후보","맛집","Pho Nha Trang",12.24,109.19,"정확한 가게 미선정·대표 위치","약 35,000~75,000동"],
+["해산물 식당 후보","맛집","Seafood restaurant Hon Chong Nha Trang",12.27,109.2,"정확한 가게 미선정·대표 위치","약 200,000~500,000동"],
+["베트남 가정식 후보","맛집","Vietnamese restaurant Nha Trang",12.243,109.195,"정확한 가게 미선정·대표 위치","약 100,000~250,000동"],
+["루프탑 바 후보","체험","Rooftop bar Nha Trang",12.239,109.198,"정확한 업장 미선정·대표 위치","약 100,000~250,000동"],
+["요리 클래스 후보","체험","Vietnamese cooking class Nha Trang",12.24,109.19,"업체 미선정·대표 위치","약 500,000~900,000동"],
+["카페 투어 후보","체험","Vietnamese coffee Nha Trang",12.242,109.196,"정확한 카페 미선정·대표 위치","음료 약 25,000~70,000동"],
+["마사지 후보","체험","Massage spa Nha Trang",12.238,109.195,"업체 미선정·대표 위치","약 150,000~450,000동"],
+["포클롱가라이 참탑","판랑 참고","Po Klong Garai Cham Towers Phan Rang",11.601,108.943,"판랑 투어 포함 여부 확인·중복 주의","상품별 상이"],
+["판랑 포도농장","판랑 참고","Vineyard Phan Rang Ninh Thuan",11.6,108.99,"판랑 투어 포함 여부 확인·대표 위치","상품별 상이"],
+["판랑 양떼목장","판랑 참고","Sheep farm Ninh Thuan Vietnam",11.7,109.05,"판랑 투어 포함 여부 확인·대표 위치","상품별 상이"],
+["바우쭉 도자기마을","판랑 참고","Bau Truc Pottery Village Ninh Thuan",11.53,108.96,"판랑 투어 포함 여부 확인","상품별 상이"],
+["빈히만","판랑 참고","Vinh Hy Bay Vietnam",11.714,109.191,"판랑 해안 별도 코스","상품별 상이"],
+["항라이","판랑 참고","Hang Rai Ninh Thuan",11.672,109.188,"판랑 해안 별도 코스","상품별 상이"],
+["깜란 국제공항","기본","Cam Ranh International Airport",11.998,109.219,"귀국·공항 이동",""],
+["혼땀 머드스파","기본","Hon Tam Mud Bath Nha Trang",12.176,109.229,"11/17 머드스파","포함 여부 확인"],
+["호핑투어 출항지 후보","기본","Nha Trang Tourist Port",12.203,109.217,"11/14 투어 집결지는 예약 확인 필요","예약 상품 확인"],
+["판랑 무이딘 사구","판랑 참고","Mui Dinh Sand Dunes Ninh Thuan",11.465,109.023,"판랑 투어 사구 중복 여부 확인","상품별 상이"]
+];
+const data=raw.map((r,i)=>({id:i,name:r[0],cat:r[1],query:r[2],lat:r[3],lng:r[4],desc:r[5],price:r[6]}));
+const colors={"기본":"#e05836","관광":"#2877c5","맛집":"#e3a322","쇼핑":"#8c55b6","체험":"#238d78","판랑 참고":"#888"};
+let saved;try{saved=JSON.parse(localStorage.getItem("nha-selected"))}catch(e){}let selected=new Set(Array.isArray(saved)?saved:data.filter(x=>x.cat==="기본").map(x=>x.id));let filter="전체",search="";
+const map=L.map("map").setView([12.24,109.19],11);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:'© OpenStreetMap contributors',maxZoom:19}).addTo(map);
+let pins=L.layerGroup().addTo(map);
+function gm(x){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(x.query)}
+function renderPins(){pins.clearLayers();for(const x of data.filter(x=>selected.has(x.id))){const marker=L.circleMarker([x.lat,x.lng],{radius:9,color:"#fff",weight:2,fillColor:colors[x.cat],fillOpacity:.95}).addTo(pins);const box=document.createElement("div");box.innerHTML="<b>"+x.name+"</b><br>"+x.desc+"<br><b>"+x.price+"</b><br>";const a=document.createElement("a");a.href=gm(x);a.target="_blank";a.rel="noopener noreferrer";a.textContent="Google 지도에서 실제 위치 확인";box.append(a);marker.bindPopup(box)}}function save(){localStorage.setItem("nha-selected",JSON.stringify([...selected]));renderPins();renderList()}
+function renderList(){const list=document.getElementById("list");list.replaceChildren();let shown=data.filter(x=>(filter==="전체"||x.cat===filter)&&(x.name+x.desc).toLowerCase().includes(search.toLowerCase()));document.getElementById("count").textContent="전체 "+data.length+"곳 · 현재 표시 "+selected.size+"곳 · 검색 결과 "+shown.length+"곳";for(const x of shown){const div=document.createElement("div");div.className="place";const label=document.createElement("label");const cb=document.createElement("input");cb.type="checkbox";cb.checked=selected.has(x.id);cb.onchange=()=>{cb.checked?selected.add(x.id):selected.delete(x.id);save()};label.append(cb,document.createTextNode(x.name));div.append(label);const detail=document.createElement("small");detail.textContent=x.cat+" · "+x.desc+(x.price?" · "+x.price:"");div.append(detail);const b=document.createElement("button");b.textContent="지도에서 보기";b.onclick=()=>{selected.add(x.id);save();map.setView([x.lat,x.lng],14);if(window.innerWidth<700)window.scrollTo({top:0,behavior:"smooth"})};div.append(b);const a=document.createElement("a");a.href=gm(x);a.target="_blank";a.rel="noopener noreferrer";a.textContent="  Google 지도 검색";div.append(a);list.append(div)}}
+const filters=document.getElementById("filters");for(const f of ["전체",...Object.keys(colors)]){const b=document.createElement("button");b.textContent=f;b.onclick=()=>{filter=f;for(const child of filters.children)child.classList.toggle("active",child===b);renderList()};if(f==="전체")b.className="active";filters.append(b)}
+document.getElementById("search").oninput=e=>{search=e.target.value;renderList()};
+const days=[["11/13 금","나트랑 도착 → 시내 1번 숙소 → 야시장"],["11/14 토","호핑·스노클링 → 시내 복귀 → 마사지 → 저녁"],["11/15 일","빈원더스 09:00~19:30 (운영시간·공연 확인)"],["11/16 월","시내 체크아웃 → 혼땀섬 입도 → 리조트 휴양"],["11/17 화","혼땀 머드스파 → 물놀이·휴식"],["11/18 수","혼땀 체크아웃 → 시내 2번 숙소 → 판랑 선셋 투어"],["11/19 목","아이리조트 → 롯데마트 → 세탁소 → 마사지"],["11/20 금","귀국 · 항공편 시간 확인 필요"]];document.getElementById("plan").innerHTML=days.map(d=>'<div class="day"><b>'+d[0]+'</b><p>'+d[1]+'</p></div>').join("")+"<p class='muted'>기본 계획표는 고정이며 추가 후보는 장소 선택 탭에서 관리합니다.</p>";
+document.getElementById("placesTab").onclick=()=>{document.getElementById("places").classList.remove("hidden");document.getElementById("plan").classList.add("hidden");document.getElementById("placesTab").classList.add("active");document.getElementById("planTab").classList.remove("active")};
+document.getElementById("planTab").onclick=()=>{document.getElementById("places").classList.add("hidden");document.getElementById("plan").classList.remove("hidden");document.getElementById("planTab").classList.add("active");document.getElementById("placesTab").classList.remove("active")};
+renderPins();renderList();</script></body></html>
