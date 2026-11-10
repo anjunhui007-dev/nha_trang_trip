@@ -24,7 +24,7 @@ const raw=[
 ["아이리조트","기본","I Resort Nha Trang",12.278,109.172,"11/19 머드온천",""],
 ["롯데마트 골드코스트","기본","Lotte Mart Gold Coast Nha Trang",12.247,109.194,"11/19 쇼핑 (지점 확인 필요)",""],
 ["파노라마 나트랑 호텔","숙박·휴양","Panorama Nha Trang 02 Nguyễn Thị Minh Khai",12.23907,109.19558,"11/13 체크인 ~ 11/16 아침 체크아웃 · 2 Nguyễn Thị Minh Khai",""],
-["비엣콤뱅크 나트랑 (환전 후보)","은행·환전","Vietcombank 17 Quang Trung Nha Trang",12.251,109.191,"17 Quang Trung · 공식 은행 환전 · 심야 영업 불가 예상 · 지도 핀은 대략적인 위치이므로 Google 지도에서 확인",""]
+["비엣콤뱅크 나트랑 (환전 후보)","쇼핑·시장","Vietcombank 17 Quang Trung Nha Trang",12.251,109.191,"17 Quang Trung · 공식 은행 환전 · 심야 영업 불가 예상 · 지도 핀은 대략적인 위치이므로 Google 지도에서 확인",""]
 ];
 const data=raw.map((r,i)=>({id:i,name:r[0],cat:r[1],query:r[2],lat:r[3],lng:r[4],desc:r[5],price:r[6]}));
 const restaurants=[["락깐 (Lạc Cảnh)","숯불 소고기","77 Nguyễn Bỉnh Khiêm","현지식 숯불 소고기 구이"],["넴느엉 당반꾸옌","넴느엉","16A Lãn Ông","나트랑식 돼지고기 구이 쌈"],["분까 응우옌로안","생선국수","123 Ngô Gia Tự","어묵·생선·해파리 국수"],["분까 꼬바","생선국수","105 Hoàng Hoa Thám","분까·해파리 국수"],["하이까","생선국수","156 Nguyễn Thị Minh Khai","반깐·분까 국수"],["꼬바 미엔비엔","게살국수","5 Thái Nguyên","게살 반깐"],["반깐 응옥","반깐·반쎄오","113 Hoàng Hoa Thám","작은 쌀전병과 해산물 반쎄오"],["반깐 51","반깐","9 Thái Nguyên","나트랑식 미니 쌀전병"],["분까 민","생선국수","170 Bạch Đằng","현지식 생선국수"],["분짜 하노이","분짜","9 Hùng Vương","하노이식 숯불 돼지고기 국수"],["퍼 한푹","쌀국수","19 Ngô Gia Tự","소고기 쌀국수"],["안토이","베트남 가정식","03 Ngô Đức Kế","베트남 요리 종합"],["안토이 2호점","베트남 가정식","64C Nguyễn Thị Minh Khai","베트남 요리 종합"],["맘 레스토랑","베트남 가정식","72 Nguyễn Thiện Thuật","베트남 가정식과 지역 요리"],["까멘","생선 가정식","04 Đề Pô","생선·해산물 밥상"],["껌동 레스토랑","베트남 요리","09 Nguyễn Thiện Thuật","베트남 요리·해산물"],["라라 씨푸드","해산물","109B Hồng Bàng","해산물 요리"],["탄스엉 씨푸드","해산물","15 Trần Phú","현지식 활해산물"],["빈싼 레스토랑","해산물","3 Nguyễn Thị Minh Khai","해산물 전문점"],["꾸안뇨 랍스터 반깐","랍스터 국수","8B/1 Đường 12A, Hà Quang 2","랍스터 반깐"],["옌스 레스토랑","베트남 요리","Trần Quang Khải","베트남 가정식"],["랜턴스","베트남 요리","Nguyễn Thiện Thuật","베트남 요리·세트메뉴"],["나트랑 쓰어","베트남 가정식","Phước Đồng","전통 분위기 베트남 가정식"],["루이지애나 브루하우스","비치 레스토랑","Trần Phú","해변 식사·그릴"]];
@@ -37,11 +37,10 @@ const categories=[
 {name:"쇼핑·시장",color:"#d97706"},
 {name:"테마파크",color:"#9333ea"},
 {name:"숙박·휴양",color:"#0891b2"},
-{name:"스파·온천",color:"#059669"},
-{name:"은행·환전",color:"#db2777"}
+{name:"스파·온천",color:"#059669"}
 ];
 const categoryColors=Object.fromEntries(categories.map(x=>[x.name,x.color]));
-const placeCategories=["시내·관광","쇼핑·시장","교통","테마파크","숙박·휴양","스파·온천","스파·온천","쇼핑·시장","숙박·휴양","은행·환전"];
+const placeCategories=["시내·관광","쇼핑·시장","교통","테마파크","숙박·휴양","스파·온천","스파·온천","쇼핑·시장","숙박·휴양","쇼핑·시장"];
 data.forEach((place,i)=>place.cat=placeCategories[i]);
 const colors=categoryColors;
 
