@@ -15,14 +15,15 @@ button{font-family:inherit;font-weight:650;color:#22516a;border:1px solid #c9dce
 #mapArea{position:relative}@media(max-width:700px){header{padding:14px 16px}header h1{font-size:19px}aside{padding:15px}.tabs{gap:5px}.tabs button{font-size:12px;padding:9px 10px}.map-legend{right:8px;bottom:8px;padding:8px;gap:4px;font-size:10px}.map-pin-dot,.map-pin-food{width:18px;height:18px}}
 .header-eyebrow{font-size:10px;font-weight:700;letter-spacing:.18em;color:#b4d6dc;margin-bottom:5px}header h1{font-weight:650;letter-spacing:-.035em}header small{letter-spacing:.025em}@media(max-width:700px){.editor-card .two{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:9px!important}.editor-card .two input[type="time"]{display:block!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:100%!important;min-height:48px!important;padding:10px 14px!important;background:#fff!important;border:1px solid #cbd5dc!important;border-radius:10px!important;color:#172c3b!important;-webkit-appearance:none;appearance:none}.editor-card .two input:not([type="time"]){width:100%!important;min-width:0!important;box-sizing:border-box!important}.editor-card{min-width:0}.my-item-time[hidden]{display:none!important}}.my-item-time[hidden]{display:none!important}.food-import-picker{padding:14px;margin:8px 0 15px;background:#eaf5f8;border:1px solid #c9e1e9;border-radius:13px;display:flex;flex-direction:column;gap:10px}.food-import-picker[hidden]{display:none!important}.food-import-select{width:100%;max-width:100%;min-height:44px;padding:10px;border-radius:10px;border:1px solid #b9d1dc;background:white;color:#17334a;font:inherit}.food-import-picker button{align-self:flex-start;background:#086f89;color:white;border-color:#086f89}</style></head><body><header><div class="header-eyebrow">TRAVEL PLANNER</div><h1>Nha Trang, 2026</h1><small>11.13 — 11.20 · Vietnam</small></header><div class="layout"><aside><div class="tabs"><button id="planTab" class="active">기본 일정</button><button id="placesTab">장소·추천 식당</button><button id="editTab">내 여행 계획</button><button id="viewTab">📋 내 여행계획 보기</button></div><section id="places" class="hidden"><input id="search" type="search" placeholder="장소 검색"><div class="filters" id="filters"></div><div class="muted" id="count"></div><div id="list"></div></section><section id="plan"></section><section id="editor" class="hidden"></section><section id="mySchedule" class="hidden"></section></aside><div id="mapArea"><div id="map"></div></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
 const raw=[
-["나트랑 시내","기본","Nha Trang City",12.2388,109.1967,"11/13 도착·환전·시내 숙박",""],
+["나트랑 시내","기본","Nha Trang City",12.2388,109.1967,"11/13 도착·환전·시내 관광",""],
 ["나트랑 야시장","기본","Nha Trang Night Market",12.237,109.196,"11/13 야시장",""],
 ["깜란 국제공항","기본","Cam Ranh International Airport",11.998,109.219,"11/13 입국 · 11/20 귀국",""],
 ["빈원더스","기본","VinWonders Nha Trang",12.218,109.245,"11/15 테마파크",""],
-["혼땀섬 리조트","기본","Hon Tam Resort Nha Trang",12.17863,109.23809,"11/16~17 혼땀섬 숙박",""],
+["혼땀섬 리조트","기본","Hon Tam Resort Nha Trang",12.17863,109.23809,"11/16 체크인 ~ 11/18 오전 체크아웃",""],
 ["혼땀 머드스파","기본","Hon Tam Mud Bath Nha Trang",12.17700738,109.23878956,"11/17 머드스파",""],
 ["아이리조트","기본","I Resort Nha Trang",12.278,109.172,"11/19 머드온천",""],
-["롯데마트 골드코스트","기본","Lotte Mart Gold Coast Nha Trang",12.247,109.194,"11/19 쇼핑 (지점 확인 필요)",""]
+["롯데마트 골드코스트","기본","Lotte Mart Gold Coast Nha Trang",12.247,109.194,"11/19 쇼핑 (지점 확인 필요)",""],
+["파노라마 나트랑 호텔","기본","Panorama Nha Trang 02 Nguyễn Thị Minh Khai",12.23907,109.19558,"11/13 체크인 ~ 11/16 아침 체크아웃 · 2 Nguyễn Thị Minh Khai",""]
 ];
 const data=raw.map((r,i)=>({id:i,name:r[0],cat:r[1],query:r[2],lat:r[3],lng:r[4],desc:r[5],price:r[6]}));
 const restaurants=[["락깐 (Lạc Cảnh)","숯불 소고기","77 Nguyễn Bỉnh Khiêm","현지식 숯불 소고기 구이"],["넴느엉 당반꾸옌","넴느엉","16A Lãn Ông","나트랑식 돼지고기 구이 쌈"],["분까 응우옌로안","생선국수","123 Ngô Gia Tự","어묵·생선·해파리 국수"],["분까 꼬바","생선국수","105 Hoàng Hoa Thám","분까·해파리 국수"],["하이까","생선국수","156 Nguyễn Thị Minh Khai","반깐·분까 국수"],["꼬바 미엔비엔","게살국수","5 Thái Nguyên","게살 반깐"],["반깐 응옥","반깐·반쎄오","113 Hoàng Hoa Thám","작은 쌀전병과 해산물 반쎄오"],["반깐 51","반깐","9 Thái Nguyên","나트랑식 미니 쌀전병"],["분까 민","생선국수","170 Bạch Đằng","현지식 생선국수"],["분짜 하노이","분짜","9 Hùng Vương","하노이식 숯불 돼지고기 국수"],["퍼 한푹","쌀국수","19 Ngô Gia Tự","소고기 쌀국수"],["안토이","베트남 가정식","03 Ngô Đức Kế","베트남 요리 종합"],["안토이 2호점","베트남 가정식","64C Nguyễn Thị Minh Khai","베트남 요리 종합"],["맘 레스토랑","베트남 가정식","72 Nguyễn Thiện Thuật","베트남 가정식과 지역 요리"],["까멘","생선 가정식","04 Đề Pô","생선·해산물 밥상"],["껌동 레스토랑","베트남 요리","09 Nguyễn Thiện Thuật","베트남 요리·해산물"],["라라 씨푸드","해산물","109B Hồng Bàng","해산물 요리"],["탄스엉 씨푸드","해산물","15 Trần Phú","현지식 활해산물"],["빈싼 레스토랑","해산물","3 Nguyễn Thị Minh Khai","해산물 전문점"],["꾸안뇨 랍스터 반깐","랍스터 국수","8B/1 Đường 12A, Hà Quang 2","랍스터 반깐"],["옌스 레스토랑","베트남 요리","Trần Quang Khải","베트남 가정식"],["랜턴스","베트남 요리","Nguyễn Thiện Thuật","베트남 요리·세트메뉴"],["나트랑 쓰어","베트남 가정식","Phước Đồng","전통 분위기 베트남 가정식"],["루이지애나 브루하우스","비치 레스토랑","Trần Phú","해변 식사·그릴"]];
@@ -38,7 +39,7 @@ const categories=[
 {name:"스파·온천",color:"#059669"}
 ];
 const categoryColors=Object.fromEntries(categories.map(x=>[x.name,x.color]));
-const placeCategories=["시내·관광","쇼핑·시장","교통","테마파크","숙박·휴양","스파·온천","스파·온천","쇼핑·시장"];
+const placeCategories=["시내·관광","쇼핑·시장","교통","테마파크","숙박·휴양","스파·온천","스파·온천","쇼핑·시장","숙박·휴양"];
 data.forEach((place,i)=>place.cat=placeCategories[i]);
 const colors=categoryColors;
 
@@ -96,14 +97,14 @@ document.getElementById("planTab").onclick=()=>{renderSchedule();document.getEle
 renderPins();renderList();
 const editor=document.getElementById("editor");
 const defaultItems=[
-[{time:"",title:"깜란공항 도착",place:2},{time:"",title:"나트랑 시내 숙소 체크인",place:0},{time:"",title:"환전",place:null},{time:"",title:"야시장·저녁",place:1}],
+[{time:"",title:"깜란공항 도착",place:2},{time:"",title:"파노라마 나트랑 호텔 체크인",place:8},{time:"",title:"환전",place:null},{time:"",title:"야시장·저녁",place:1}],
 [{time:"",title:"호핑·스노클링 투어",place:null},{time:"",title:"마사지",place:null},{time:"",title:"현지 저녁",place:null}],
 [{time:"09:00",title:"빈원더스",place:3}],
-[{time:"",title:"시내 숙소 체크아웃",place:0},{time:"",title:"혼땀섬 리조트 이동·체크인",place:4},{time:"",title:"해변·수영장",place:4}],
+[{time:"",title:"파노라마 나트랑 호텔 체크아웃",place:8},{time:"",title:"혼땀섬 리조트 이동·체크인",place:4},{time:"",title:"해변·수영장",place:4}],
 [{time:"",title:"혼땀 머드스파",place:5},{time:"",title:"스노클링·수영·휴식",place:4}],
-[{time:"",title:"혼땀 체크아웃·시내 복귀",place:4},{time:"",title:"시내 숙소 체크인",place:0},{time:"",title:"판랑 선셋 지프투어",place:null}],
+[{time:"",title:"혼땀 체크아웃(오전)·시내 복귀",place:4},{time:"",title:"18일 이후 숙소 미정",place:null},{time:"",title:"판랑 선셋 지프투어",place:null}],
 [{time:"",title:"아이리조트 머드온천",place:6},{time:"",title:"롯데마트 쇼핑",place:7},{time:"",title:"세탁소",place:null},{time:"",title:"마사지",place:null}],
-[{time:"",title:"시내 숙소 체크아웃",place:0},{time:"",title:"깜란공항·귀국",place:2}]
+[{time:"",title:"숙소 체크아웃 (숙소 미정)",place:null},{time:"",title:"깜란공항·귀국",place:2}]
 ];
 function freshPlan(){return defaultItems.map(day=>day.map(item=>({...item,note:""})))}
 function loadPlan(){try{const v=JSON.parse(localStorage.getItem("nha-planner-v1"));if(Array.isArray(v)&&v.length===8&&v.every(Array.isArray))return v}catch(e){}return freshPlan()}
