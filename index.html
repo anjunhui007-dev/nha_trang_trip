@@ -113,7 +113,7 @@ function savePlan(){localStorage.setItem("nha-planner-v1",JSON.stringify(userPla
 // Shared public trip synchronization. This is intentionally a public collaborative board.
 const TRIP_API="https://gjntjxzklbljxjuceuus.supabase.co/rest/v1/shared_trip_state";
 const TRIP_KEY="sb_publishable_ZfHAOGrMIEnANBb41SUg-A_gB36RYcX";
-const TRIP_HEADERS={"apikey":TRIP_KEY,"Authorization":"Bearer "+TRIP_KEY,"Content-Type":"application/json"};
+const TRIP_HEADERS={"apikey":TRIP_KEY,"Content-Type":"application/json"};
 let tripReady=false,tripRevision="",tripSaving=false,tripPending=false,tripTimer=null;
 function tripNotes(){const notes={};data.forEach(p=>{const v=localStorage.getItem("nha-note-"+p.name);if(v!==null)notes[p.name]=v});return notes}
 function tripFoodNotes(){const notes={};dayFood.forEach(group=>group[1].forEach(([name])=>{const v=localStorage.getItem("nha-food-note-"+name);if(v!==null)notes[name]=v}));return notes}
