@@ -211,4 +211,4 @@ for(const [tab,section] of Object.entries(PACK_TABS)){document.getElementById(ta
 for(const id of ["placesTab","planTab","editTab","viewTab"]){const old=document.getElementById(id).onclick;document.getElementById(id).onclick=()=>{for(const section of Object.values(PACK_TABS))document.getElementById(section).classList.add("hidden");for(const tab of Object.keys(PACK_TABS))document.getElementById(tab).classList.remove("active");old()}}
 initPacking();
 
-</script><script src="./phrasebook.js?v=20261113-3" defer></script></body></html>
+</script><script src="./phrasebook.js?v=20261113-4" defer></script></body></html>
